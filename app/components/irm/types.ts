@@ -5,8 +5,9 @@ export interface Program {
 
 export interface SurveyQuestion {
     id: number;
-    programId: number;
-    question: string;
+    categoryId: number;
+    category: string;
+    name: string;
     description: string;
 }
 

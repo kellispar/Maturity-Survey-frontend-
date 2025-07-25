@@ -3,7 +3,7 @@ import axios from 'axios';
 // Create an axios instance with default configurations
 const axiosInstance = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api`, // Use environment variable or default to localhost
-  timeout: 15000, // 15 seconds timeout
+  timeout: 60000, // 15 seconds timeout
   headers: {
     'Content-Type': 'application/json',
   },

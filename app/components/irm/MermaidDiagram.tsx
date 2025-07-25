@@ -6,37 +6,16 @@ interface MermaidDiagramProps {
   code: string;
 }
 
+mermaid.initialize({
+  startOnLoad: true,
+  theme: "default",
+  securityLevel: "loose",
+});
+
 const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ code }) => {
-  const mermaidRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    if (mermaidRef.current && code) {
-      mermaid.initialize({});
-
-      // Clear the container before rendering
-      mermaidRef.current.innerHTML = "";
-
-      // Try to render the diagram
-      try {
-        mermaid
-          .render("mermaid-diagram", code)
-          .then(({ svg, bindFunctions }) => {
-            if (mermaidRef.current) {
-              mermaidRef.current.innerHTML = svg;
-              // Bind functions if needed
-              if (bindFunctions) {
-                bindFunctions(mermaidRef.current);
-              }
-            }
-          });
-      } catch (error: any) {
-        console.error("Error rendering Mermaid diagram:", error);
-        if (mermaidRef.current) {
-          mermaidRef.current.innerHTML = `<div class="text-red-500">Error rendering diagram: ${error.message}</div>`;
-        }
-      }
-    }
-  }, [code]);
+    mermaid.contentLoaded();
+  }, []);
 
   return (
     <div className="bg-gray-50 p-6 rounded-lg border-2 border-dashed border-gray-300">
@@ -46,13 +25,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ code }) => {
         <p className="text-sm">Framework Alignment Implementation</p>
       </div>
       <div className="bg-white p-4 rounded border overflow-auto">
-        {!code ? (
-          <p className="text-gray-500 text-center py-4">
-            No diagram data available
-          </p>
-        ) : (
-          <div ref={mermaidRef} className="mermaid-container"></div>
-        )}
+        <div className="mermaid">{code}</div>
       </div>
     </div>
   );

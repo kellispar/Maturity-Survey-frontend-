@@ -8,7 +8,7 @@ interface AIAnalysisProps {
   isLoading: boolean;
   currentStep: number;
   onBack: () => void;
-  onCreateTicket: () => void;
+  onDownloadReport: () => void;
 }
 
 const AIAnalysis: React.FC<AIAnalysisProps> = ({
@@ -17,7 +17,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
   isLoading,
   currentStep,
   onBack,
-  onCreateTicket,
+  onDownloadReport,
 }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
@@ -51,12 +51,11 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
             ← Back to Survey
           </button>
           <button
-            onClick={onCreateTicket}
+            onClick={onDownloadReport}
             disabled={isLoading}
             className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 disabled:bg-gray-400 flex items-center"
           >
-            {isLoading ? "Creating Ticket..." : "Create ServiceNow Ticket"}
-            {!isLoading && <ExternalLink className="w-5 h-5 ml-2" />}
+            {isLoading ? "Downloading..." : "Download Report"}
           </button>
         </div>
       )}

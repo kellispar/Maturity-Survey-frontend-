@@ -11,6 +11,7 @@ import ProgressIndicator from "~/components/irm/ProgressIndicator";
 import SurveyForm from "~/components/irm/SurveyForm";
 import AIAnalysis from "~/components/irm/AIAnalysis";
 import ServiceNowTicketView from "~/components/irm/ServiceNowTicketView";
+import { downloadFile } from "~/helper";
 
 const IRMProofOfConcept: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -27,6 +28,7 @@ const IRMProofOfConcept: React.FC = () => {
     useState<ServiceNowTicket | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
+  const [pdfPath, setPdfPath] = useState("");
 
   // Fetch programs when component mounts
   useEffect(() => {
@@ -116,11 +118,12 @@ const IRMProofOfConcept: React.FC = () => {
       );
 
       // Extract the AI summary and Mermaid diagram from the response
-      const { aiSummary, mermaidDiagram } = response.data;
+      const { aiSummary, mermaidDiagram, pdfPath } = response.data;
 
       // Update the state with the data from the API
       setAiSummary(aiSummary);
       setMermaidCode(mermaidDiagram);
+      setPdfPath(pdfPath);
       setCurrentStep(2);
     } catch (error) {
       console.error("Error submitting survey results:", error);
@@ -176,8 +179,30 @@ const IRMProofOfConcept: React.FC = () => {
     }
 
     setAiSummary("");
+    setPdfPath("");
     setMermaidCode("");
     setServiceNowTicket(null);
+  };
+
+  const downloadReport = async () => {
+    setIsLoading(true);
+
+    try {
+      const fileName = `IRM_Report_${formData.programName}.pdf`;
+
+      const response = await axiosInstance.post(
+        "/survey/results/pdf-download",
+        {
+          pdfPath,
+        }
+      );
+
+      await downloadFile(response.data, fileName);
+    } catch (error) {
+      // TODO
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -226,7 +251,7 @@ const IRMProofOfConcept: React.FC = () => {
           isLoading={isLoading}
           currentStep={currentStep}
           onBack={() => setCurrentStep(1)}
-          onCreateTicket={createServiceNowTicket}
+          onDownloadReport={downloadReport}
         />
       )}
 

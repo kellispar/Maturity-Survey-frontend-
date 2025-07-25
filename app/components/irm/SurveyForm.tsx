@@ -53,41 +53,68 @@ const SurveyForm: React.FC<SurveyFormProps> = ({
         </select>
       </div>
 
-      <div className="space-y-6">
-        {surveyQuestions.map((question) => (
-          <div
-            key={question.id}
-            className="border border-gray-200 rounded-lg p-4"
-          >
-            <h3 className="font-medium text-gray-900 mb-2">
-              {question.question}
-            </h3>
-            <p className="text-sm text-gray-600 mb-3">{question.description}</p>
-            <div className="flex items-center space-x-4">
-              {[1, 2, 3, 4, 5].map((score) => (
-                <label key={score} className="flex items-center">
-                  <input
-                    type="radio"
-                    name={question.id.toString()}
-                    value={score}
-                    checked={formData.responses[question.id] === score}
-                    onChange={(e) => onInputChange(question.id, e.target.value)}
-                    className="mr-2"
-                  />
-                  <span
-                    className={`px-3 py-1 rounded ${
-                      formData.responses[question.id] === score
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {score}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
-        ))}
+      <div className="overflow-hidden border border-gray-200 rounded-lg">
+        <table className="w-full">
+          <thead className="bg-gray-800 text-white">
+            <tr>
+              <th className="px-6 py-4 text-left font-medium">Category</th>
+              <th className="px-6 py-4 text-left font-medium">Question</th>
+              <th className="px-6 py-4 text-center font-medium w-48">
+                Response
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {surveyQuestions.map((question, index) => (
+              <tr
+                key={question.id}
+                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+              >
+                <td className="px-6 py-4 text-sm font-medium text-gray-900 w-75">
+                  {question.category}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-900">
+                  <div>
+                    <p className="font-medium">{question.name}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {question.description}
+                    </p>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-center">
+                  <div className="flex items-center justify-center space-x-3">
+                    {[1, 2, 3, 4, 5].map((score) => (
+                      <label
+                        key={score}
+                        className="flex items-center cursor-pointer"
+                      >
+                        <input
+                          type="radio"
+                          name={String(question.id)}
+                          value={score}
+                          checked={formData.responses[question.id] === score}
+                          onChange={(e) =>
+                            onInputChange(question.id, e.target.value)
+                          }
+                          className="sr-only"
+                        />
+                        <span
+                          className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                            formData.responses[question.id] === score
+                              ? "bg-blue-600 text-white"
+                              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                          }`}
+                        >
+                          {score}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       <div className="mt-8 flex justify-between">
